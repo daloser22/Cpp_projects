@@ -189,18 +189,18 @@ namespace atm
       auto it1 = tracks.find(track1);
       auto it2 = tracks.find(track2);
       
-      if(it1!= tracks.end() || it2 == tracks.end())
+      if(it1== tracks.end() || it2 == tracks.end())
       {
         throw std::runtime_error("Track not found");
       }
       else
       {
         double lat1, lat2, long1, long2;
-        
-        lat1 = it->second->GetLatitude();
-        long1 = it->second->GetLongitude();
-        lat2 = it->second->GetLatitude();
-        long2 = it->second->GetLongitude();
+
+        lat1 = it1->second->GetLatitude();
+        long1 = it1->second->GetLongitude();
+        lat2 = it2->second->GetLatitude();
+        long2 = it2->second->GetLongitude();
 
         if((abs(lat1 - lat2) < 0.05) && (abs(long1 - long2) < 0.05))
         {
@@ -209,7 +209,7 @@ namespace atm
         }
         else
         {
-          std::cout << "No conflic detected" << std::endl;
+          std::cout << "No conflict detected" << std::endl;
         }
       }
     }
