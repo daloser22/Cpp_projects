@@ -77,6 +77,19 @@ namespace atm
       return name;
     }
 
+    bool HasAircraft(const std::shared_ptr<Aircraft>& track)
+    {
+      bool retval = false;
+
+      auto it = aircraftInside.find(track->GetCallsign());
+      if (it != aircraftInside.end())
+      {
+        retval = true;
+      }
+
+      return retval;
+    }
+
     void EnterAircraft(const std::shared_ptr<Aircraft>& track)
     {
       auto it = aircraftInside.find(track->GetCallsign());
@@ -200,21 +213,30 @@ namespace atm
     }
 
     void TransferAircraft(const std::shared_ptr<Aircraft>&    track,
-                          const std::shared_ptr<Sector>&      departure,
-                          const std::shared_ptr<Sector>&      arrival)
+                          const std::shared_ptr<Sector>&      ExitSector,
+                          const std::shared_ptr<Sector>&      EntrySector)
     {
+      if(false != EntrySector->HasAircraft(track))
+      {
+        throw std::runtime_error("TRANSFER CANCELED. This flight already exists in EntrySector");
+      }
+      if(false == ExitSector->HasAircraft(track))
+      {
+        throw std::runtime_error("TRANSFER CANCELED. This flight doesn't exist in ExitSector");
+      }
+
       std::string new_line;
-      departure->ExitAircraft(track->GetCallsign());
-      arrival->EnterAircraft(track);
+      ExitSector->ExitAircraft(track->GetCallsign());
+      EntrySector->EnterAircraft(track);
 
       std::cout<< "Transfer completed" << std::endl;
-      std::cout<< track->GetCallsign() << " moved from "<< departure->GetSectorID() << " to " << arrival->GetSectorID() << std::endl;
+      std::cout<< track->GetCallsign() << " moved from "<< ExitSector->GetSectorID() << " to " << EntrySector->GetSectorID() << std::endl;
       
       new_line = "TRANSFER " + track->GetCallsign();
       Record.push_back(new_line);
-      new_line = "FROM " + departure->GetSectorID();
+      new_line = "FROM " + ExitSector->GetSectorID();
       Record.push_back(new_line);
-      new_line = "TO " + arrival->GetSectorID();
+      new_line = "TO " + EntrySector->GetSectorID();
       Record.push_back(new_line);
     }
 
