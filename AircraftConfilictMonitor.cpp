@@ -237,6 +237,21 @@ public:
     }
   }
 
+  double CalculateDistance(const std::shared_ptr<Aircraft>& track1,
+                         const std::shared_ptr<Aircraft>& track2)
+  {
+    // distance = √((x2-x1)^2 + (y2-y1)^2)
+    double operand1, operand2, distance;
+
+    operand1 = (track2->GetXPosition() - track1->GetXPosition());
+    operand2 = (track2->GetYPosition() - track1->GetYPosition());
+    operand1 = std::pow(operand1, 2); // Potencia de 2
+    operand2 = std::pow(operand2, 2); // Potencia de 2
+    distance = sqrt(operand1 + operand2); 
+    
+    return distance;
+  }
+
   void DisplayStatistics(void)
   {
     int high_fl, low_fl, avg_fl, number_tracks;
@@ -271,21 +286,6 @@ public:
   }
 };
 
-double CalculateDistance(const std::shared_ptr<Aircraft>& track1,
-                         const std::shared_ptr<Aircraft>& track2)
-{
-  // distance = √((x2-x1)^2 + (y2-y1)^2)
-  double operand1, operand2, distance;
-
-  operand1 = (track2->GetXPosition() - track1->GetXPosition());
-  operand2 = (track2->GetYPosition() - track1->GetYPosition());
-  operand1 = std::pow(operand1, 2); // Potencia de 2
-  operand2 = std::pow(operand2, 2); // Potencia de 2
-  distance = sqrt(operand1 + operand2); 
-  
-  return distance;
-}
-
 int main()
 { 
   ATCManager manager;
@@ -297,8 +297,6 @@ int main()
   auto track6 = std::make_shared<Aircraft>("DLH333", 17, 14, 330, 450);
   auto track7 = std::make_shared<Aircraft>("UAE777", 100, 90, 390, 500);
   auto track8 = std::make_shared<Aircraft>("AAL111", 14, 10, 325, 435);
-
-  CalculateDistance(track1, track2);
 
   manager.AddTrack(track1);
   manager.AddTrack(track2);
